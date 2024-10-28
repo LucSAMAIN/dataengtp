@@ -18,7 +18,7 @@ You can run it either Locally (as we saw in the docker lecture) or with [Github 
 Open Codespace as indicated in the images below (use the main branch).
 And run docker in the codespace. From here on is the same as locally.
 
-![codespaces](codespaces-howto.png)
+![codespaces](../codespaces-howto.png)
 
 ![visualstudio](codespaces-visualstudio.png)
 
