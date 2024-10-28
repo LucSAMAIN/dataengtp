@@ -4,7 +4,7 @@ redis
 py2
 neo
 neo4j
-
+py2neo
 pymongo
 ipython-cypher
 
