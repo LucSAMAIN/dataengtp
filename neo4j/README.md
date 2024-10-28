@@ -1,6 +1,36 @@
-## Introduction:
-### Neo4J:
-   <a href="https://neo4j.com/">Neo4J</a>  is a graph database management system developed by Neo4j, Inc. Described by its developers as a native graph storage and processing. It is the most popular graph database according to DB-Engines ranking, and the 22nd most popular database overall.<br/>
+# Neo4J Practice
+
+The practice works in Docker using Docker Compose.
+
+You can run it either Locally (as we saw in the docker lecture) or with Github Codespace
+
+
+### Locally
+
+- Pull the latest version of this repository
+- cd into the neo4j folder
+- run docker compose
+  - you can use Visualstudio Code
+  - you can use a dockerised installation of Jupyter
+  - in neo4j there is also a web client a ccessible locally on port 7474 [Open Client](HTTPs://localhost:7474/browser)
+  
+### CodeSpace
+
+Open Codespace as indicated in the images below (use the main branch).
+And run docker in the codespace. From here on, it is the same as locally.
+
+![codespaces](codespaces-howto.png)
+
+![visualstudio](codespaces-visualstudio.png)
+
+``` docker compose up -d ```
+
+#### Unfortunately, the UI does not seem to work on codespaces; there is a Jupiter notebook accessible at the forwarded port 8888 (check on the codespace terminal). Remember to open the correct container (Jupiter)
+
+
+## Basic Info On Neo4j and Property Graph/Cypher
+
+<a href="https://neo4j.com/">Neo4J</a>  is a graph database management system developed by Neo4j, Inc. Described by its developers as a native graph storage and processing. It is the most popular graph database according to DB-Engines ranking, and the 22nd most popular database overall.<br/>
 <div style="text-align:center"><img src="https://neo4j.com/wp-content/themes/neo4jweb/assets/images/neo4j-logo-2015.png"></div>
 
 
@@ -19,7 +49,6 @@ t is a declarative, SQL-inspired language for describing visual patterns in grap
 
 ### Neo4j PreLab
 #### Windows users:
-
 
 - Install neo4j 3.5 Community Edition followin this <a href='https://neo4j.com/download-thanks/?edition=community&release=3.5.21&flavour=winzip&_ga=2.186751336.1137015944.1598288824-1813280835.1541597058'>link </a>
 
