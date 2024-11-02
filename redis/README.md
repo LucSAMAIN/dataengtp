@@ -1,3 +1,42 @@
+## Redis DB Practice
+
+The practice works in Docker using Docker Compose.
+
+You can run it either Locally (as we saw in the docker lecture) or with [Github Codespace](https://30daysof.github.io/data-science-day/week-2/1-codespaces/)
+
+### Locally
+
+- Pull the latest version of this repository
+- cd into the redis folder
+- run docker compose
+  - you can use Visualstudio Code
+  - you can use a dockerised installation of Jupyter
+  - in the compose there is also a redis inight  client container to visualise the content of the database. Accessible locally on port 5540
+  
+### CodeSpace
+
+Open Codespace as indicated in the images below (use the main branch).
+And run docker in the codespace. From here on is the same as locally.
+
+![codespaces](../codespaces-howto.png)
+
+![visualstudio](codespaces-visualstudio.png)
+
+### Using Visual Studio
+
+``` docker compose up -d ```
+
+### Launchign with Jupyter Lab (in browser)
+
+``` docker compose -f docker-compose.jupyter.yml up -d```
+
+[Open Jupyter](http://127.0.0.1:8888/)
+
+
+## Legacy
+
+Here there are the instruction in case you would like to install redis locally without docker.
+
 ### PreLab
 
 ### 1. Install Redis on Windows
@@ -45,23 +84,3 @@ docker-compose up
 The following docker compose file will build the notebook container which includes all the required dependencies.
 Services are also exposed to the host network so you can connect to the via localhost.
 
-[Open Jupyter](http://127.0.0.1:8888/)
-
-
-```yaml
-version: "3"
-
-services:
-  redis: 
-    image: redis
-    ports:
-      - 6379:6379
-  notebook:
-    build: notebook/
-    ports:
-      - 8888:8888
-    volumes:
-       - ./:/home/jovyan/work/data
-    environment:
-      - GRANT_SUDO=yes
-```     
