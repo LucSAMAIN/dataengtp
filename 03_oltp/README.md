@@ -1,4 +1,4 @@
-# Practice 3: Supermarket Database - ER Diagram Design
+# Practice 3: Supermarket Database - ER Diagram Design (Courtesy of  Hasan Tanvir, Kristo Raun, and Ahmed Wael )
 
 Welcome to the second practice session! The goal of this exercise is to design and implement a normalized relational database for a supermarket's operational needs. We will analyze the business requirements, design an Entity-Relationship (ER) Diagram, and then build the database schema in PostgreSQL.
 
