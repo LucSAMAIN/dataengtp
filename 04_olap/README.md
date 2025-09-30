@@ -1,4 +1,4 @@
-# Practice 3: Dimensional Modeling & Star Schema
+# Practice 3: Dimensional Modeling & Star Schema (Courtesy of  Hasan Tanvir, Kristo Raun, and Ahmed Wael )
 
 Welcome to Practice 3!  
 In the last session, we built a normalized **operational database** (OLTP) for supermarket transactions.  
@@ -9,7 +9,7 @@ In this session, we’ll shift to building an **analytical database** (OLAP) usi
 ## Table of Contents (with Time Management)
 
 - [1. Analytical Needs (5 min)](#1-analytical-needs)  
-- [2. Why ER Diagrams Do Not Work Well for Analytics (10 min)](#2-why-er-diagrams-do-not-work-well-for-analytics)  
+- [2. Why Classical Data Modelling Does Not Work Well for Analytics (10 min)](#2-why-classical-data-modelling-does-not-work-well-for-analytics)  
 - [3. Dimensional Modeling Concepts (25 min)](#3-dimensional-modeling-concepts)  
   - [3.1 Identifying the Business Process (5 min)](#31-identifying-the-business-process)  
   - [3.2 Defining the Grain of the Fact Table (5 min)](#32-defining-the-grain-of-the-fact-table)  
@@ -40,7 +40,7 @@ The following reporting requirements must be supported:
 
 ---
 
-## 2. Why ER Diagrams Do Not Work Well for Analytics
+## 2. Why Classical Data Modelling Does Not Work Well for Analytics
 
 Our OLTP model from Practice 2 is excellent for transactions, but painful for analysis.  
 Key reasons:
@@ -344,68 +344,16 @@ VALUES
 
 In this section, we will write queries to analyze sales performance at the store level. The focus is on aggregating sales data by day and by month to identify trends, peak periods, and store-wise performance.
 
-<details>
-<summary>Solution</summary>
-
-```sql
--- Daily sales per store
-SELECT d.FullDate, s.StoreName, SUM(f.SalesAmount) AS DailySales
-FROM FactSales f
-JOIN DimDate d ON f.DateKey = d.DateKey
-JOIN DimStore s ON f.StoreKey = s.StoreKey
-GROUP BY d.FullDate, s.StoreName
-ORDER BY d.FullDate, s.StoreName;
-
--- Monthly sales per store
-SELECT d.Year, d.Month, s.StoreName, SUM(f.SalesAmount) AS MonthlySales
-FROM FactSales f
-JOIN DimDate d ON f.DateKey = d.DateKey
-JOIN DimStore s ON f.StoreKey = s.StoreKey
-GROUP BY d.Year, d.Month, s.StoreName
-ORDER BY d.Year, d.Month, s.StoreName;
-```
 
 ### 7.2 Sales by Product Category
 
-```sql
-SELECT p.Category, SUM(f.SalesAmount) AS TotalSales
-FROM FactSales f
-JOIN DimProduct p ON f.ProductKey = p.ProductKey
-GROUP BY p.Category
-ORDER BY TotalSales DESC;
-```
 
 ### 7.3 Top-Selling Products and Suppliers
 
-```sql
--- Top 5 products by sales amount
-SELECT p.ProductName, SUM(f.SalesAmount) AS TotalSales
-FROM FactSales f
-JOIN DimProduct p ON f.ProductKey = p.ProductKey
-GROUP BY p.ProductName
-ORDER BY TotalSales DESC
-LIMIT 5;
 
--- Top 5 suppliers by sales amount
-SELECT sp.SupplierName, SUM(f.SalesAmount) AS TotalSales
-FROM FactSales f
-JOIN DimSupplier sp ON f.SupplierKey = sp.SupplierKey
-GROUP BY sp.SupplierName
-ORDER BY TotalSales DESC
-LIMIT 5;
-```
 
 ### 7.4 Average Basket Size (Number of Products per Purchase)
 
-```sql
-SELECT f.CustomerSurrKey, d.FullDate, AVG(f.Quantity) AS AvgBasketSize
-FROM FactSales f
-JOIN DimDate d ON f.DateKey = d.DateKey
-GROUP BY f.CustomerSurrKey, d.FullDate
-ORDER BY f.CustomerSurrKey, d.FullDate;
-```
-</details>
----
 
 ## 8. Handling Customer Moves in OLAP
 
@@ -428,8 +376,6 @@ New Data
 
 The old city (Tallinn) is lost. Past purchases now appear under the new city.
 
-
-
 - **Solution in OLAP (SCD Type 2)**: maintain historical records with `ValidFrom` and `ValidTo`.
 
 Example:
@@ -440,41 +386,7 @@ Example:
 | 3           | Alice     | Smith    | Regular | Tartu   | 2025-09-21 | 9999-12-31 |
 
 Alice's new CustomerKey is 3 because Bob is 2. 
-<details>
-<summary>Solution</summary>
 
-```sql
--- Customer moves to Tartu (SCD Type 2)
--- Mark old record as not current
-UPDATE DimCustomer
-SET ValidTo = CURRENT_DATE - INTERVAL '1 day'
-WHERE CustomerKey = 1
-  AND ValidTo = '9999-12-31';
-
-INSERT INTO DimCustomer (CustomerKey, FirstName, LastName, Segment, City, ValidFrom, ValidTo)
-VALUES (3, 'Alice', 'Smith', 'Regular', 'Tartu', CURRENT_DATE, '9999-12-31');
-
--- FactSales automatically references the correct CustomerKey at transaction time
-INSERT INTO FactSales (DateKey, StoreKey, ProductKey, SupplierKey, CustomerKey, PaymentKey, Quantity, SalesAmount)
-VALUES (3, 2, 2, 2, 3, 2, 4, 4*0.8);
-
--- Query to see sales by customer including moves
-SELECT c.FirstName || ' ' || c.LastName AS CustomerName, c.City, SUM(f.SalesAmount) AS TotalSales
-FROM FactSales f
-JOIN DimCustomer c ON f.CustomerKey = c.customerkey
-GROUP BY CustomerName, c.City
-ORDER BY CustomerName, c.City;
-
--- Query sales by city considering SCD
-SELECT c.City, SUM(f.SalesAmount) AS TotalSales
-FROM FactSales f
-JOIN DimCustomer c ON f.CustomerKey = c.CustomerKey
-GROUP BY c.City
-ORDER BY TotalSales DESC;
-
-``` 
-
-</details>
 
 
 **Explanation:**
