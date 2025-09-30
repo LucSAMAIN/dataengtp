@@ -1,4 +1,8 @@
-**Highlights**
+# Task 3: assignment_dag — extended exercise (API + logging + DB)
+
+This DAG turns the concepts into a realistic pipeline: it calls a public API (D&D 5e), generates synthetic data, branches on runtime conditions, merges intermediate JSONs, and executes SQL against Postgres using SQLExecuteQueryOperator. It includes structured logging and a failure callback for clear console diagnostics.
+
+## Highlights
 
 * Modern imports:
 
@@ -20,7 +24,7 @@
   )
   ```
 
-**Steps**
+## Steps
 
 1. **Prereqs:**
 
