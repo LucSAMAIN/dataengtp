@@ -1,21 +1,17 @@
-import airflow
-import datetime
+import pendulum
+from datetime import timedelta
+
 from airflow import DAG
-from airflow.operators.bash_operator import BashOperator
-from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.empty import EmptyOperator
 
-default_args_dict = {
-    'start_date': airflow.utils.dates.days_ago(0),
-    'concurrency': 1,
-    'schedule_interval': None,
-    'retries': 1,
-    'retry_delay': datetime.timedelta(minutes=5),
-}
+START_DATE = pendulum.datetime(2024, 1, 1, tz="UTC")
 
-first_dag = DAG(
-    dag_id='first_dag_stub',
-    default_args=default_args_dict,
+with DAG(
+    dag_id="first_dag_stub",
+    start_date=START_DATE,
+    schedule=None,          # no schedule
     catchup=False,
+<<<<<<< HEAD
 )
 
 task_one = DummyOperator(
@@ -45,5 +41,20 @@ task_five = DummyOperator(
 
 task_one >> task_two >> task_three >> task_four >> task_five
 
+=======
+    max_active_tasks=1,     # old 'concurrency'
+    default_args={
+        "retries": 1,
+        "retry_delay": timedelta(minutes=5),
+    },
+    tags=["stub"],
+) as dag:
+>>>>>>> 90e10ce (updated airflow for practice)
 
+    get_spreadsheet = EmptyOperator(task_id="get_spreadsheet")
+    transmute_to_csv = EmptyOperator(task_id="transmute_to_csv")
+    time_filter = EmptyOperator(task_id="time_filter")
+    load = EmptyOperator(task_id="load")
+    cleanup = EmptyOperator(task_id="cleanup")
 
+    get_spreadsheet >> transmute_to_csv >> time_filter >> load >> cleanup
