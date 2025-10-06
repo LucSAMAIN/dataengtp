@@ -1,0 +1,75 @@
+@startuml
+entity Categories {
+    *CategoryID : SERIAL [PK]
+    --
+    CategoryName : VARCHAR(255) [UNIQUE, NOT NULL]
+}
+
+entity Suppliers {
+    *SupplierID : SERIAL [PK]
+    --
+    SupplierName : VARCHAR(255) [NOT NULL]
+}
+
+entity Products {
+    *ProductID : SERIAL [PK]
+    --
+    ProductName : VARCHAR(255) [NOT NULL]
+    Price : DECIMAL(10,2) [NOT NULL]
+    CategoryID : INT [FK]
+}
+
+entity Product_Suppliers {
+    *ProductID : INT [PK, FK]
+    *SupplierID : INT [PK, FK]
+}
+
+entity Stores {
+    *StoreID : SERIAL [PK]
+    --
+    StoreName : VARCHAR(255) [NOT NULL]
+    Location : VARCHAR(255)
+}
+
+entity Customers {
+    *CustomerID : SERIAL [PK]
+    --
+    FirstName : VARCHAR(255) [NOT NULL]
+    LastName : VARCHAR(255)
+    Email : VARCHAR(255) [UNIQUE]
+}
+
+entity Purchases {
+    *PurchaseID : SERIAL [PK]
+    --
+    PurchaseDateTime : TIMESTAMP [NOT NULL, DEFAULT now()]
+    CustomerID : INT [FK]
+    StoreID : INT [FK]
+}
+
+entity Purchase_Items {
+    *PurchaseID : INT [PK, FK]
+    *ProductID : INT [PK, FK]
+    Quantity : INT [NOT NULL, >0]
+}
+
+entity Payments {
+    *PaymentID : SERIAL [PK]
+    --
+    PurchaseID : INT [FK, UNIQUE, NOT NULL]
+    PaymentMethod : VARCHAR(50) [NOT NULL, ENUM: Cash|Card|Voucher]
+    Amount : DECIMAL(10,2) [NOT NULL]
+}
+
+' Relationships
+Categories ||--o{ Products : "has"
+Products ||--o{ Product_Suppliers : "linked to"
+Suppliers ||--o{ Product_Suppliers : "provides"
+
+Customers ||--o{ Purchases : "makes"
+Stores ||--o{ Purchases : "hosts"
+Purchases ||--o{ Purchase_Items : "contains"
+Products ||--o{ Purchase_Items : "sold in"
+
+Purchases ||--|| Payments : "paid by"
+@enduml
