@@ -1,17 +1,19 @@
-version: "3"
-
 services:
   airflow:
-    image: apache/airflow:2.7.1
+    image: apache/airflow
   mongo:
     image: mongo
   neo:
     image: neo4j
   redis:
-    image: redis:latest
+    image: redis
   postgres:
+<<<<<<< HEAD
     image: postgres:13
   ubuntu:
     image: ubuntu
+=======
+    image: postgres
+>>>>>>> dd12dad (started restructuring for practice)
   notebook:
     build: notebook/
